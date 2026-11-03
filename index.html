@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>测测你是喜灰里的谁｜你的性格最像谁</title>
+  <style>
+    /* 莫兰迪色调 + 小红书清新简约风 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: #F7F3EE;  /* 暖白基底 */
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #4A4036;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px 16px 40px;
+    }
+
+    /* 主卡片容器，所有内容都放在里面 */
+    .app-wrapper {
+      max-width: 480px;
+      width: 100%;
+      margin: 0 auto;
+      background-color: #FFFFFFFA;
+      border-radius: 32px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.03), 0 2px 8px rgba(0, 0, 0, 0.02);
+      padding: 28px 20px 32px;
+      transition: all 0.2s;
+    }
+
+    /* 顶部标题区 */
+    .header {
+      text-align: left;
+      margin-bottom: 24px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #EAE3DB;
+    }
+
+    .header h1 {
+      font-size: 1.7rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: #5E554B;
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+
+    .header .subhead {
+      font-size: 0.9rem;
+      color: #A89F94;
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .header .subhead span {
+      background-color: #EDE7E0;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      color: #7F756B;
+    }
+
+    /* 封面导语区（初始可见） */
+    .cover {
+      display: block;
+      margin-bottom: 20px;
+    }
+
+    .cover .intro-text {
+      font-size: 0.95rem;
+      color: #6B6259;
+      background-color: #F4EFE9;
+      padding: 18px 16px;
+      border-radius: 20px;
+      line-height: 1.6;
+      margin-bottom: 22px;
+      border-left: 4px solid #C9BAA8;
+    }
+
+    .cover .intro-text p {
+      margin-bottom: 10px;
+    }
+
+    .cover .intro-text p:last-child {
+      margin-bottom: 0;
+    }
+
+    .btn {
+      border: none;
+      background-color: #C9BAA8;  /* 莫兰迪灰棕 */
+      color: #FFFFFF;
+      font-weight: 500;
+      font-size: 1rem;
+      padding: 15px 24px;
+      border-radius: 40px;
+      width: 100%;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      box-shadow: 0 4px 12px rgba(180, 160, 140, 0.15);
+      letter-spacing: 0.3px;
+      border: 1px solid #D9CBBE;
+    }
+
+    .btn:active {
+      background-color: #B7A897;
+      transform: scale(0.98);
+    }
+
+    .btn.secondary {
+      background-color: #EDE7E0;
+      color: #5E554B;
+      box-shadow: none;
+      border: 1px solid #D9D0C6;
+    }
+
+    .btn.secondary:active {
+      background-color: #E0D7CE;
+    }
+
+    /* 答题区域 */
+    .quiz-section {
+      display: none;
+    }
+
+    .quiz-section.active {
+      display: block;
+    }
+
+    .progress {
+      font-size: 0.8rem;
+      color: #B7A99A;
+      letter-spacing: 0.3px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .progress .count {
+      background-color: #F0EAE3;
+      padding: 4px 12px;
+      border-radius: 30px;
+      color: #8C7E70;
+      font-weight: 500;
+    }
+
+    .question-text {
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: #4E443A;
+      margin-bottom: 24px;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 26px;
+    }
+
+    .option-item {
+      background-color: #F9F6F2;
+      border: 1px solid #EAE2D9;
+      border-radius: 20px;
+      padding: 16px 18px;
+      font-size: 1rem;
+      color: #5E554B;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
+    .option-item.selected {
+      background-color: #E8DFD6;
+      border-color: #C9BAA8;
+      color: #3D352E;
+      font-weight: 500;
+    }
+
+    .option-item:active {
+      background-color: #E8DFD6;
+    }
+
+    .option-item .radio-indicator {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1.5px solid #C9BAA8;
+      background-color: #FFFFFF;
+      margin-right: 14px;
+      flex-shrink: 0;
+      position: relative;
+      transition: all 0.1s;
+    }
+
+    .option-item.selected .radio-indicator {
+      border-color: #A18E7C;
+      background-color: #A18E7C;
+      box-shadow: inset 0 0 0 3px #F9F6F2;
+    }
+
+    /* 下一题按钮 */
+    #nextBtn {
+      margin-top: 8px;
+      background-color: #C9BAA8;
+    }
+
+    #nextBtn:disabled {
+      opacity: 0.5;
+      background-color: #D9D0C6;
+      box-shadow: none;
+      transform: none;
+      cursor: default;
+    }
+
+    /* 结果页面 */
+    .result-section {
+      display: none;
+    }
+
+    .result-section.active {
+      display: block;
+    }
+
+    .result-card {
+      background-color: #F4EFE9;
+      border-radius: 24px;
+      padding: 24px 20px;
+      margin-bottom: 24px;
+      border: 1px solid #E7DFD6;
+    }
+
+    .result-name {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #4E443A;
+      margin-bottom: 8px;
+      line-height: 1.2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .result-name .emoji-badge {
+      font-size: 2rem;
+      background-color: #FFFFFFD0;
+      width: 56px;
+      height: 56px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+    .result-tagline {
+      font-size: 0.9rem;
+      color: #9C8F82;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px dashed #DACFC3;
+      font-style: italic;
+    }
+
+    .result-copy {
+      font-size: 0.95rem;
+      color: #5E554B;
+      line-height: 1.7;
+    }
+
+    .result-copy p {
+      margin-bottom: 16px;
+    }
+
+    .result-copy p:last-child {
+      margin-bottom: 0;
+    }
+
+    .result-copy .highlight {
+      color: #7A6A5A;
+      font-weight: 600;
+      background: linear-gradient(120deg, #F0E6DC 0%, #F0E6DC 40%, transparent 80%);
+      padding: 0 4px;
+    }
+
+    .result-copy .small-note {
+      background-color: #FFFFFFD0;
+      padding: 14px 16px;
+      border-radius: 18px;
+      font-size: 0.9rem;
+      margin-top: 12px;
+      border-left: 3px solid #C9BAA8;
+    }
+
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    /* 隐藏工具类 */
+    .hidden {
+      display: none !important;
+    }
+
+    /* 适配小屏 */
+    @media (max-width: 380px) {
+      .app-wrapper {
+        padding: 20px 16px 28px;
+      }
+      .header h1 {
+        font-size: 1.5rem;
+      }
+      .question-text {
+        font-size: 1.2rem;
+      }
+      .option-item {
+        padding: 14px 14px;
+        font-size: 0.95rem;
+      }
+    }
+
+    /* 禁用点击穿透 */
+    .no-select {
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-wrapper">
+    <!-- 标题区 (始终显示) -->
+    <div class="header">
+      <h1>测测你是喜灰里的谁</h1>
+      <div class="subhead">你的性格最像谁 <span>15题·现实宜居向</span></div>
+    </div>
+
+    <!-- 封面 + 导语 (初始可见) -->
+    <div id="coverSection" class="cover">
+      <div class="intro-text">
+        <p>🌿 如果《喜羊羊与灰太狼》也有“宜居性格测试”……</p>
+        <p>从气候偏好、通勤节奏、美食、潮湿包容度、社交电量到收入期待，15道生活化小题，测出你骨子里最像羊村哪位居民。</p>
+        <p style="font-size:0.85rem; color:#9C8F82;">✨ 没有对错，只是另一种认识自己的方式。</p>
+      </div>
+      <button id="startBtn" class="btn">开始测试 →</button>
+    </div>
+
+    <!-- 答题区域 (初始隐藏) -->
+    <div id="quizSection" class="quiz-section">
+      <div class="progress">
+        <span id="progressText">第 1 / 15 题</span>
+        <span class="count" id="questionCounter">1/15</span>
+      </div>
+      <div id="questionText" class="question-text">题目加载中...</div>
+      <div id="optionsContainer" class="options"></div>
+      <button id="nextBtn" class="btn" disabled>下一题</button>
+    </div>
+
+    <!-- 结果区域 (初始隐藏) -->
+    <div id="resultSection" class="result-section">
+      <div class="result-card">
+        <div class="result-name">
+          <span id="resultCharacter">懒羊羊</span>
+          <span class="emoji-badge" id="resultEmoji">🐑</span>
+        </div>
+        <div class="result-tagline" id="resultTagline">“能躺着绝不坐着”</div>
+        <div class="result-copy" id="resultCopy">
+          <!-- 动态填充解读文案 -->
+        </div>
+      </div>
+      <div class="action-buttons">
+        <button id="retestBtn" class="btn secondary">🔁 重新测试</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // ---------- 题目数据 ----------
+      // 每题四个选项，每个选项对应一个角色权重（为了最终十个角色都可出现，使用累计加分制）
+      // 角色列表: 喜羊羊, 美羊羊, 懒羊羊, 沸羊羊, 暖羊羊, 慢羊羊, 灰太狼, 红太狼, 小灰灰, 蕉太狼
+      const characters = [
+        "喜羊羊", "美羊羊", "懒羊羊", "沸羊羊", "暖羊羊",
+        "慢羊羊", "灰太狼", "红太狼", "小灰灰", "蕉太狼"
+      ];
+
+      // 简写映射
+      const C = {
+        XY: 0, // 喜羊羊
+        MY: 1, // 美羊羊
+        LY: 2, // 懒羊羊
+        FY: 3, // 沸羊羊
+        NY: 4, // 暖羊羊
+        MYang: 5, // 慢羊羊 (用 MYang 避免冲突)
+        HLT: 6, // 灰太狼
+        HTL: 7, // 红太狼
+        XHH: 8, // 小灰灰
+        JTL: 9  // 蕉太狼
+      };
+
+      // 15道题目 + 每个选项对应的角色加分（+1~+3不等，每个角色都有被偏向的机会）
+      const questions = [
+        {
+          text: "你理想中的居住气候是？",
+          options: [
+            { text: "四季分明，冬天有雪夏天有风", scores: { [C.XY]: 2, [C.NY]: 1, [C.MYang]: 1 } },
+            { text: "温暖湿润，一年四季花开", scores: { [C.MY]: 3, [C.XHH]: 1 } },
+            { text: "干爽凉快，阳光充足不黏腻", scores: { [C.LY]: 2, [C.FY]: 1, [C.JTL]: 1 } },
+            { text: "冬暖夏凉，最好不用开空调", scores: { [C.MYang]: 2, [C.HLT]: 1, [C.HTL]: 1 } }
+          ]
+        },
+        {
+          text: "你更接受哪种通勤节奏？",
+          options: [
+            { text: "走路五分钟到公司，慢悠悠", scores: { [C.LY]: 3, [C.MYang]: 1 } },
+            { text: "地铁三站，不挤还有座", scores: { [C.NY]: 2, [C.XHH]: 1, [C.JTL]: 1 } },
+            { text: "骑车穿过小巷，自由又拉风", scores: { [C.FY]: 2, [C.XY]: 1, [C.MY]: 1 } },
+            { text: "远程办公，被窝里打卡", scores: { [C.HLT]: 2, [C.LY]: 1, [C.HTL]: 1 } }
+          ]
+        },
+        {
+          text: "哪种美食最能让你快乐？",
+          options: [
+            { text: "青草蛋糕配热牛奶，清新治愈", scores: { [C.MY]: 2, [C.NY]: 1, [C.XHH]: 1 } },
+            { text: "超大份炸鸡配冰可乐", scores: { [C.FY]: 3, [C.HTL]: 1 } },
+            { text: "懒人自热锅，不用洗碗", scores: { [C.LY]: 3, [C.HLT]: 1 } },
+            { text: "现烤羊肉串（别打我）", scores: { [C.HLT]: 2, [C.JTL]: 2 } }
+          ]
+        },
+        {
+          text: "你能接受空气潮湿、衣服晾不干吗？",
+          options: [
+            { text: "完全不行，干爽是第一要义", scores: { [C.LY]: 2, [C.HLT]: 1, [C.MYang]: 1 } },
+            { text: "有点烦，但可以买烘干机", scores: { [C.XY]: 2, [C.FY]: 1, [C.NY]: 1 } },
+            { text: "没关系，皮肤水当当", scores: { [C.MY]: 3, [C.XHH]: 1 } },
+            { text: "无所谓，我宅家不出门", scores: { [C.JTL]: 2, [C.LY]: 1, [C.HLT]: 1 } }
+          ]
+        },
+        {
+          text: "周末你更喜欢热闹还是安静？",
+          options: [
+            { text: "叫朋友来家火锅桌游，热闹！", scores: { [C.FY]: 2, [C.XY]: 1, [C.HTL]: 1 } },
+            { text: "一个人窝着看剧吃零食", scores: { [C.LY]: 3, [C.JTL]: 1 } },
+            { text: "去公园散步，看花看草", scores: { [C.MY]: 2, [C.NY]: 1, [C.XHH]: 1 } },
+            { text: "在家整理房间、做手工", scores: { [C.MYang]: 2, [C.NY]: 1, [C.XHH]: 1 } }
+          ]
+        },
+        {
+          text: "你对收入的期待是？",
+          options: [
+            { text: "够花就行，自由最重要", scores: { [C.LY]: 2, [C.JTL]: 2, [C.MYang]: 1 } },
+            { text: "要能攒钱买大房子", scores: { [C.HLT]: 2, [C.HTL]: 2 } },
+            { text: "中上水平，稳定有保障", scores: { [C.XY]: 2, [C.NY]: 1, [C.MY]: 1 } },
+            { text: "钱多事少离家近，完美", scores: { [C.LY]: 2, [C.FY]: 1, [C.XHH]: 1 } }
+          ]
+        },
+        {
+          text: "你最喜欢的季节是？",
+          options: [
+            { text: "春天，万物复苏", scores: { [C.MY]: 2, [C.XHH]: 1, [C.NY]: 1 } },
+            { text: "夏天，可以吃冰游泳", scores: { [C.FY]: 3, [C.XY]: 1 } },
+            { text: "秋天，凉爽又金黄", scores: { [C.MYang]: 2, [C.NY]: 1, [C.JTL]: 1 } },
+            { text: "冬天，窝着最有幸福感", scores: { [C.LY]: 3, [C.HLT]: 1 } }
+          ]
+        },
+        {
+          text: "面对计划外的小麻烦，你通常？",
+          options: [
+            { text: "立刻行动，快速解决", scores: { [C.XY]: 3, [C.FY]: 1 } },
+            { text: "先抱怨两句，再慢慢弄", scores: { [C.HTL]: 2, [C.LY]: 1, [C.HLT]: 1 } },
+            { text: "找朋友帮忙，一起想办法", scores: { [C.NY]: 2, [C.XHH]: 1, [C.MY]: 1 } },
+            { text: "原地发呆，等它自己变好", scores: { [C.LY]: 3, [C.JTL]: 1 } }
+          ]
+        },
+        {
+          text: "你更喜欢哪种社交模式？",
+          options: [
+            { text: "三五好友深度聊，不喜泛交", scores: { [C.MY]: 2, [C.NY]: 1, [C.MYang]: 1 } },
+            { text: "人多热闹，认识新朋友", scores: { [C.FY]: 3, [C.XY]: 1 } },
+            { text: "线上聊天可以，线下算了", scores: { [C.HLT]: 2, [C.JTL]: 2 } },
+            { text: "看心情，有时社牛有时社恐", scores: { [C.XHH]: 2, [C.MY]: 1, [C.LY]: 1 } }
+          ]
+        },
+        {
+          text: "对待“熊孩子”，你的包容度？",
+          options: [
+            { text: "完全包容，小孩子多可爱", scores: { [C.XHH]: 3, [C.NY]: 1, [C.MY]: 1 } },
+            { text: "可以接受，但别太闹", scores: { [C.MYang]: 2, [C.NY]: 1, [C.XHH]: 1 } },
+            { text: "有点头疼，想躲远点", scores: { [C.HLT]: 2, [C.LY]: 1, [C.HTL]: 1 } },
+            { text: "如果是我家的，那没办法", scores: { [C.HTL]: 2, [C.HLT]: 1, [C.JTL]: 1 } }
+          ]
+        },
+        {
+          text: "你的手机电量低于20%会？",
+          options: [
+            { text: "焦虑，马上找充电宝", scores: { [C.XY]: 2, [C.HTL]: 1, [C.MY]: 1 } },
+            { text: "不管，用到关机再说", scores: { [C.LY]: 3, [C.JTL]: 1 } },
+            { text: "还好，我经常忘带手机", scores: { [C.MYang]: 2, [C.XHH]: 1, [C.NY]: 1 } },
+            { text: "正好，没人能找到我", scores: { [C.HLT]: 2, [C.JTL]: 1, [C.FY]: 1 } }
+          ]
+        },
+        {
+          text: "如果要养宠物，你会选？",
+          options: [
+            { text: "狗狗，忠诚又热情", scores: { [C.FY]: 2, [C.XY]: 1, [C.XHH]: 1 } },
+            { text: "猫咪，独立又治愈", scores: { [C.MY]: 2, [C.HTL]: 1, [C.LY]: 1 } },
+            { text: "小仓鼠/乌龟，省心", scores: { [C.MYang]: 2, [C.JTL]: 1, [C.LY]: 1 } },
+            { text: "不养，云吸就好", scores: { [C.HLT]: 2, [C.LY]: 1, [C.XHH]: 1 } }
+          ]
+        },
+        {
+          text: "面对“内卷”的工作环境，你？",
+          options: [
+            { text: "卷起来，我不服输", scores: { [C.XY]: 3, [C.FY]: 1 } },
+            { text: "适度努力，但不拼命", scores: { [C.NY]: 2, [C.MY]: 1, [C.MYang]: 1 } },
+            { text: "躺平，爱咋咋地", scores: { [C.LY]: 3, [C.JTL]: 1 } },
+            { text: "一边吐槽一边干", scores: { [C.HTL]: 2, [C.HLT]: 1, [C.FY]: 1 } }
+          ]
+        },
+        {
+          text: "你更看重朋友的哪一点？",
+          options: [
+            { text: "靠谱，说到做到", scores: { [C.XY]: 2, [C.NY]: 1, [C.MYang]: 1 } },
+            { text: "有趣，在一起开心", scores: { [C.FY]: 2, [C.JTL]: 1, [C.XHH]: 1 } },
+            { text: "温柔，能听我倾诉", scores: { [C.MY]: 3, [C.NY]: 1 } },
+            { text: "真实，不装", scores: { [C.HLT]: 2, [C.HTL]: 1, [C.LY]: 1 } }
+          ]
+        },
+        {
+          text: "你理想中的周末早晨是？",
+          options: [
+            { text: "早起晨跑，顺便买早餐", scores: { [C.XY]: 2, [C.FY]: 1, [C.NY]: 1 } },
+            { text: "睡到自然醒，再赖一会儿", scores: { [C.LY]: 3, [C.JTL]: 1 } },
+            { text: "做顿精致的早午餐，拍照", scores: { [C.MY]: 3, [C.XHH]: 1 } },
+            { text: "和伴侣/家人一起打扫屋子", scores: { [C.HTL]: 2, [C.NY]: 1, [C.MYang]: 1 } }
+          ]
+        }
+      ];
+
+      // ---------- 角色详细解读数据 ----------
+      // 每个角色包含: 名字, emoji, tagline, 适配亮点, 小缺点, 小可爱, 为什么像(困境/顺境)
+      const characterDetails = [
+        { // 0 喜羊羊
+          name: "喜羊羊",
+          emoji: "🐏",
+          tagline: "聪明靠谱，羊村首席解决问题官",
+          copy: `
+            <p><span class="highlight">✨ 适配亮点：</span>你就像喜羊羊，脑子转得快，遇到困难第一反应是“我来想办法”。生活里你独立、有规划，朋友遇到麻烦也爱找你商量。通勤路上你总能找到最快路线，连超市打折都算得明明白白。</p>
+            <p><span class="highlight">🍃 小缺点：</span>偶尔太要强，什么事都自己扛，忘了可以依赖别人。有时候着急了说话直，容易让亲近的人觉得你“太理性”。</p>
+            <p><span class="highlight">🐣 小可爱：</span>嘴上说“没事”，转头偷偷把所有人的事都记在备忘录里。内心其实很在乎大家的评价，只是不轻易表露。</p>
+            <p><span class="highlight">🔁 为什么像：</span>顺境时你是那个带头往前冲的人，逆境时你会焦虑但绝不摆烂——和喜羊羊一样，坚信“办法总比困难多”。</p>
+          `
+        },
+        { // 1 美羊羊
+          name: "美羊羊",
+          emoji: "🌸",
+          tagline: "温柔爱美，氛围感天花板",
+          copy: `
+            <p><span class="highlight">✨ 适配亮点：</span>美羊羊式的你，对生活有审美要求，喜欢把日子过得精致。无论是摆盘、穿搭还是房间布置，你都有自己的一套。气候上你偏爱温暖湿润，因为对皮肤好。</p>
+            <p><span class="highlight">🍃 小缺点：</span>偶尔会纠结小事，比如今天穿什么、哪张照片更好看。遇到太粗糙的环境会有点不适应。</p>
+            <p><span class="highlight">🐣 小可爱：</span>看到好看的花会走不动路，手机里存满了天空和美食的照片。对朋友大方，但自己偷偷吃土。</p>
+            <p><span class="highlight">🔁 为什么像：</span>顺境时你是气氛温柔剂，逆境时虽然会慌，但依然努力保持体面——和美丽一样，脆弱但韧性十足。</p>
+          `
+        },
+        { // 2 懒羊羊
+          name: "懒羊羊",
+          emoji: "😴",
+          tagline: "人间清醒，躺平学十级学者",
+          copy: `
+            <p><span class="highlight">✨ 适配亮点：</span>你像懒羊羊一样，深谙“舒服才是王道”。理想通勤是五分钟，周末最爱窝着，收入不求大富大贵，够花就好。你懂得放过自己，不内耗。</p>
+            <p><span class="highlight">🍃 小缺点：</span>容易把事情拖到最后一刻，偶尔因为太懒错过一些机会。在别人眼里有点“没追求”。</p>
+            <p><span class="highlight">🐣 小可爱：</span>虽然嘴上懒，但朋友真需要帮忙时，你会一边嘟囔一边伸手。而且你快乐阈值很低，一个小蛋糕就能开心半天。</p>
+            <p><span class="highlight">🔁 为什么像：</span>顺境时你是人间小太阳（懒洋洋版），逆境时你心态超稳——反正天塌下来有喜羊羊顶着。像懒羊羊一样，看似不靠谱，其实关键时候不掉链子。</p>
+          `
+        },
+        { // 3 沸羊羊
+          name: "沸羊羊",
+          emoji: "💪",
+          tagline: "热血行动派，干就完了",
+          copy: `
+            <p><span class="highlight">✨ 适配亮点：</span>你身上有沸羊羊的影子——直率、热情、行动力爆棚。喜欢夏天和热闹，吃饭偏爱重口味。朋友眼里你是个讲义气的“大哥/大姐”。</p>
+            <p><span class="highlight">🍃 小缺点：</span>有时候冲动，做事不太过脑子。情绪来得快去得也快，嗓门大，偶尔会吓到安静的人。</p>
+            <p><span class="highlight">🐣 小可爱：</span>其实内心很柔软，被夸了会不好意思地挠头。对朋友的事比自己的还上心。</p>
+            <p><span class="highlight">🔁 为什么像：</span>顺境时你是气氛发动机，逆境时你第一个冲上去——虽然方法不一定聪明，但那份勇气和喜灰里的沸羊羊一模一样。</p>
+          `
+        },
+        { // 4 暖羊羊
+          name: "暖羊羊",
+          emoji: "☀️",
+          tagline: "温暖担当，朋友身边的小棉袄",
+          copy: `
+            <p><span class="highlight">✨ 适配亮点：</span>你像暖羊羊一样，是团队里的粘合剂。你重视朋友，包容度高，通勤希望安稳，收入期待中上即可。喜欢春秋，气候宜人。</p>
+            <p><span class="highlight">🍃 小缺点：</span>容易把别人的情绪背在自己身上，不好意思拒绝别人，偶尔委屈自己。</p>
+            <p><span class="highlight">🐣 小可爱：</span>总是默默记住朋友的生日，包里常备纸巾和创可贴。看到流浪猫会心软。</p>
+            <p><span class="highlight">🔁 为什么像：</span>顺境时你温暖大家，逆境时你是定心丸。就像暖羊羊，看起来不争不抢，但所有人都离不开你。</p>
+          `
+        },
+        { // 5 慢羊羊
+          name: "慢羊羊",
+          emoji: "🐢",
+          tagline: "慢节奏生活家，智慧型佛系",
+          copy: `
+            <p><span class="highlight">✨ 适配亮点：</span>你像慢羊羊村长，喜欢慢节奏，气候上偏爱冬暖夏凉，通勤不能太折腾。你擅长思考，对收入期待不高，更看重生活质量。</p>
+            <p><span class="highlight">🍃 小缺点：</span>做决定比较慢，有时候会错过时机。在快节奏的人眼里，你有点“拖延”。</p>
+            <p><span class="highlight">🐣 小可爱：</span>虽然慢，但很靠谱。经常沉浸在自己的小世界里，比如研究一道菜或者整理旧物。</p>
+            <p><span class="highlight">🔁 为什么像：</span>顺境时你是安静的后盾，逆境时你也不慌不忙。像慢羊羊一样，看着慢吞吞，其实心里门儿清。</p>
+          `
+        },
+        { // 6 灰太狼
+          name: "灰太狼",
+          emoji: "🐺",
+          tagline: "打不死的小强，责任型奋斗逼",
+          copy: `
+            <p><span class="highlight">✨ 适配亮点：</span>你和灰太狼一样，抗压能力一流。收入期待不低，愿意为家庭拼。你其实很聪明，会很多小技能，就是运气偶尔差一点。</p>
+            <p><span class="highlight">🍃 小缺点：</span>有时候太执着于目标，把自己搞得很累。嘴上爱逞强，其实心里需要被肯定。</p>
+            <p><span class="highlight">🐣 小可爱：</span>对家人超级大方，对自己抠门。被夸“你好厉害”会假装不在意，其实尾巴翘上天。</p>
+            <p><span class="highlight">🔁 为什么像：</span>顺境时你努力积累，逆境时你屡败屡战——和灰太狼一样，永远喊着“我一定会回来的”。</p>
+          `
+        },
+        { // 7 红太狼
+          name: "红太狼",
+          emoji: "👑",
+          tagline: "精致要强，刀子嘴豆腐心",
+          copy: `
+            <p><span class="highlight">✨ 适配亮点：</span>你像红太狼一样，对生活有要求，希望伴侣/朋友上进。你气场强，收入期待中上，喜欢热闹也享受被宠。</p>
+            <p><span class="highlight">🍃 小缺点：</span>有时候脾气急，说话像小刀子。其实心里软得很，就是拉不下脸。</p>
+            <p><span class="highlight">🐣 小可爱：</span>嘴上嫌弃，行动上却把家里打理得井井有条。看到可爱的东西会偷偷开心。</p>
+            <p><span class="highlight">🔁 为什么像：</span>顺境时你是家里的女王，逆境时你嘴上骂着但手没停——和红太狼一样，撑起了半个家。</p>
+          `
+        },
+        { // 8 小灰灰
+          name: "小灰灰",
+          emoji: "🐶",
+          tagline: "天真小天使，世界以温柔待我",
+          copy: `
+            <p><span class="highlight">✨ 适配亮点：</span>你像小灰灰，保持着孩子般的好奇和善意。对世界包容度高，喜欢小动物，收入期待不高，容易满足。</p>
+            <p><span class="highlight">🍃 小缺点：</span>有时候太单纯，容易相信别人。遇到复杂的人际关系会有点懵。</p>
+            <p><span class="highlight">🐣 小可爱：</span>看到什么都觉得新鲜，笑点很低。对朋友百分百信任，是典型的“开心果”。</p>
+            <p><span class="highlight">🔁 为什么像：</span>顺境时你是大家的快乐源泉，逆境时你依然相信美好——和小灰灰一样，用纯真化解复杂。</p>
+          `
+        },
+        { // 9 蕉太狼
+          name: "蕉太狼",
+          emoji: "🍌",
+          tagline: "佛系吃货，大智若愚型",
+          copy: `
+            <p><span class="highlight">✨ 适配亮点：</span>你像蕉太狼，外表憨憨，其实内心通透。你喜欢简单的生活，通勤要舒服，潮湿无所谓，收入不纠结，有香蕉（零食）就开心。</p>
+            <p><span class="highlight">🍃 小缺点：</span>有时候太随性，让人觉得你没啥计划性。其实你只是不想被束缚。</p>
+            <p><span class="highlight">🐣 小可爱：</span>有吃的就很快乐，性格超级好，几乎不生气。是朋友中的“吉祥物”。</p>
+            <p><span class="highlight">🔁 为什么像：</span>顺境时你享受当下，逆境时你也不急不躁——和蕉太狼一样，看似迷糊，其实活得最明白。</p>
+          `
+        }
+      ];
+
+      // ---------- 状态 ----------
+      let currentQuestionIndex = 0; // 0~14
+      let userAnswers = new Array(15).fill(null); // 存储每题选择的选项索引 (0~3)
+      let scores = new Array(10).fill(0); // 十个角色的累计得分
+      let selectedOptionIndex = null; // 当前题目选择的选项索引
+
+      // DOM 元素
+      const coverSection = document.getElementById('coverSection');
+      const quizSection = document.getElementById('quizSection');
+      const resultSection = document.getElementById('resultSection');
+      const startBtn = document.getElementById('startBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const retestBtn = document.getElementById('retestBtn');
+      const progressText = document.getElementById('progressText');
+      const questionCounter = document.getElementById('questionCounter');
+      const questionText = document.getElementById('questionText');
+      const optionsContainer = document.getElementById('optionsContainer');
+
+      // 结果页元素
+      const resultCharacter = document.getElementById('resultCharacter');
+      const resultEmoji = document.getElementById('resultEmoji');
+      const resultTagline = document.getElementById('resultTagline');
+      const resultCopy = document.getElementById('resultCopy');
+
+      // ---------- 辅助函数 ----------
+      function resetState() {
+        currentQuestionIndex = 0;
+        userAnswers = new Array(15).fill(null);
+        scores = new Array(10).fill(0);
+        selectedOptionIndex = null;
+        // 清空界面
+        coverSection.classList.remove('hidden');
+        quizSection.classList.remove('active');
+        resultSection.classList.remove('active');
+        // 重置按钮状态
+        nextBtn.disabled = true;
+      }
+
+      // 显示题目
+      function renderQuestion(index) {
+        const q = questions[index];
+        if (!q) return;
+
+        // 更新进度
+        progressText.textContent = `第 ${index + 1} / 15 题`;
+        questionCounter.textContent = `${index + 1}/15`;
+        questionText.textContent = q.text;
+
+        // 生成选项
+        optionsContainer.innerHTML = '';
+        q.options.forEach((opt, optIdx) => {
+          const div = document.createElement('div');
+          div.className = 'option-item' + (userAnswers[index] === optIdx ? ' selected' : '');
+          div.dataset.optionIndex = optIdx;
+
+          const radio = document.createElement('span');
+          radio.className = 'radio-indicator';
+
+          const textSpan = document.createElement('span');
+          textSpan.textContent = opt.text;
+
+          div.appendChild(radio);
+          div.appendChild(textSpan);
+
+          div.addEventListener('click', () => {
+            // 清除同题其他选中状态
+            document.querySelectorAll('.option-item').forEach(el => el.classList.remove('selected'));
+            div.classList.add('selected');
+            selectedOptionIndex = optIdx;
+            // 记录答案
+            userAnswers[currentQuestionIndex] = optIdx;
+            nextBtn.disabled = false;
+          });
+
+          optionsContainer.appendChild(div);
+        });
+
+        // 如果该题已选择过，恢复按钮状态
+        if (userAnswers[index] !== null) {
+          selectedOptionIndex = userAnswers[index];
+          nextBtn.disabled = false;
+        } else {
+          selectedOptionIndex = null;
+          nextBtn.disabled = true;
+        }
+      }
+
+      // 计算最终得分，返回角色索引
+      function calculateResult() {
+        // 重置得分
+        scores = new Array(10).fill(0);
+        for (let i = 0; i < questions.length; i++) {
+          const answerIdx = userAnswers[i];
+          if (answerIdx === null) continue; // 跳过未答（理论上全部已答）
+          const selectedOption = questions[i].options[answerIdx];
+          const optionScores = selectedOption.scores;
+          for (const charIndex in optionScores) {
+            if (Object.prototype.hasOwnProperty.call(optionScores, charIndex)) {
+              scores[charIndex] += optionScores[charIndex];
+            }
+          }
+        }
+        // 找出最高分角色
+        let maxScore = -1;
+        let maxIndex = 0;
+        for (let i = 0; i < scores.length; i++) {
+          if (scores[i] > maxScore) {
+            maxScore = scores[i];
+            maxIndex = i;
+          }
+        }
+        return maxIndex;
+      }
+
+      // 显示结果页
+      function showResult() {
+        const charIndex = calculateResult();
+        const detail = characterDetails[charIndex];
+        resultCharacter.textContent = detail.name;
+        resultEmoji.textContent = detail.emoji;
+        resultTagline.textContent = `“${detail.tagline}”`;
+        resultCopy.innerHTML = detail.copy;
+
+        // 切换到结果页
+        coverSection.classList.add('hidden');
+        quizSection.classList.remove('active');
+        resultSection.classList.add('active');
+      }
+
+      // ---------- 事件绑定 ----------
+      startBtn.addEventListener('click', () => {
+        // 重置所有状态
+        resetState();
+        currentQuestionIndex = 0;
+        userAnswers = new Array(15).fill(null);
+        // 隐藏封面，显示答题
+        coverSection.classList.add('hidden');
+        resultSection.classList.remove('active');
+        quizSection.classList.add('active');
+        renderQuestion(0);
+      });
+
+      nextBtn.addEventListener('click', () => {
+        // 确保当前题目已选择
+        if (userAnswers[currentQuestionIndex] === null) return;
+
+        // 如果是最后一题，直接计算结果
+        if (currentQuestionIndex === questions.length - 1) {
+          // 检查所有题目是否已答
+          const allAnswered = userAnswers.every(ans => ans !== null);
+          if (!allAnswered) {
+            alert('请先回答所有题目～');
+            return;
+          }
+          showResult();
+          return;
+        }
+
+        // 否则移动到下一题
+        currentQuestionIndex++;
+        renderQuestion(currentQuestionIndex);
+      });
+
+      retestBtn.addEventListener('click', () => {
+        // 完全重置
+        resetState();
+        // 再额外清理结果页
+        resultSection.classList.remove('active');
+        // 显示封面
+        coverSection.classList.remove('hidden');
+        quizSection.classList.remove('active');
+      });
+
+      // 初始化：确保封面可见，隐藏其他
+      resetState();
+
+    })();
+  </script>
+</body>
+</html>
